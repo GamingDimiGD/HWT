@@ -44,13 +44,16 @@ $('.add-btn').on('click', () => {
     console.log($(`.remove[--data-index="${hwI}"]`))
     $(`.remove[--data-index="${hwI}"]`).on('click', () => {
         homeworkList = homeworkList.filter((hw) => hw.text !== input)
-        $(`.hw[--data-index="${hwI}"]`).remove()
+        $('.hw-container').empty();
+        $.jStorage.set('hw', homeworkList)
+        homeworkList.forEach((hw) => addHW(hw))
+
     })
     toHorizontalWords()
     $('.hw-input')[0].value = ''
 })
 
-homeworkList.forEach((hw) => {
+const addHW = (hw) => {
     let input = hw.text
     const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
     let eleText =
@@ -59,10 +62,14 @@ homeworkList.forEach((hw) => {
     console.log($(`.remove[--data-index="${hwI}"]`))
     $(`.remove[--data-index="${hwI}"]`).on('click', () => {
         homeworkList = homeworkList.filter((hw) => hw.text !== input)
-        $(`.hw[--data-index="${hwI}"]`).remove()
+        $('.hw-container').empty();
+        $.jStorage.set('hw', homeworkList)
+        homeworkList.forEach((hw) => addHW(hw))
     })
     toHorizontalWords()
-})
+} 
+
+homeworkList.forEach((hw) => addHW(hw))
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
