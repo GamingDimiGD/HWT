@@ -114,6 +114,14 @@ button:hover {
     pointer-events: auto;
 }
 
+.modal .content button {
+    padding: 2px 7px;
+}
+
 .input-container {
     padding: 5px;
+}
+
+.hw button {
+    margin-top: 10px;
 }
