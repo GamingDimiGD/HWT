@@ -33,7 +33,7 @@ const addHW = (hw) => {
     const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
     let eleText =
         `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text">${input}</b>
-        <button class="remove" --data-index="${hwI}" >-</button><button class="edit" --data-index="${hwI}" ><i class="fa-solid fa-pen"></i></button><input type="color" class="color" --data-index="${hwI}"></div>`
+        <button class="remove" --data-index="${hwI}" >-</button><button class="edit" --data-index="${hwI}" ><i class="fa-solid fa-pen"></i></button><input type="color" class="color" --data-index="${hwI}" value="${hw.color}"></div>`
     $('.hw-container').append(eleText)
     console.log($(`.remove[--data-index="${hwI}"]`))
     $(`.remove[--data-index="${hwI}"]`).on('click', () => {
@@ -85,6 +85,7 @@ $('.add-btn').on('click', () => {
     if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
     homeworkList.push({
         text: input,
+        color: '#ffffff',
     })
     $.jStorage.set('hw', homeworkList)
     addHW(input)
