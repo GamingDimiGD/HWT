@@ -91,7 +91,7 @@ button:hover {
     font-size: 1.5rem
 }
 
-.alert-modal .content {
+.content {
     background: #cccccc;
     color: #000 !important;
     max-width: 230px;
@@ -124,4 +124,13 @@ button:hover {
 
 .hw button {
     margin-top: 10px;
+}
+
+.input-options {
+    margin-top: 10px;
+}
+
+.cancel-btn {
+    background: #3c0000;
+    color: #fff;
 }

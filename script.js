@@ -56,14 +56,21 @@ const addHW = (hw) => {
         ])
     })
     $(`.edit[--data-index="${hwI}"]`).on('click', () => {
-        let input = prompt('請問你要更改成...')
-        if (!input) return
-        if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
-        homeworkList[hwI].text = input
-        $('.hw-container').empty();
-        $.jStorage.set('hw', homeworkList)
-        homeworkList.forEach((hw) => addHW(hw))
-        toHorizontalWords()
+        $('.edit-hw').addClass('show')
+        $('.edit-input').val(input)
+        $('.edit-input').focus()
+        $('.save-btn')[0].onclick = () => {
+            let input = $('.edit-input').val().trim()
+            if (homeworkList.find((hw) => hw.text === input)) {
+                return $('.edit-hw').removeClass('show')
+            }
+            homeworkList[hwI].text = input
+            $('.hw-container').empty();
+            $.jStorage.set('hw', homeworkList)
+            homeworkList.forEach((hw) => addHW(hw))
+            toHorizontalWords()
+            $('.edit-hw').removeClass('show')
+        }
     })
     $(`.color[--data-index="${hwI}"]`).on('change', () => {
         let color = $(`.color[--data-index="${hwI}"]`).val()
