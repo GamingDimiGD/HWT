@@ -9,6 +9,37 @@ const getDay = () => {
     return ['日', '一', '二', '三', '四', '五', '六'][day]
 }
 
+let to全形 = [
+    {
+        i: '(',
+        o: '（'
+    },
+    {
+        i: ')',
+        o: '）'
+    },
+    {
+        i: '[',
+        o: '［'
+    },
+    {
+        i: ']',
+        o: '］'
+    },
+    {
+        i: '{',
+        o: '｛'
+    },
+    {
+        i: '}',
+        o: '｝'
+    },
+    {
+        i: '~',
+        o: '～'
+    }
+]
+
 $('.day').html(getDay())
 
 const toHorizontalWords = () => {
@@ -61,6 +92,10 @@ const addHW = (hw) => {
         $('.edit-input').focus()
         $('.save-btn')[0].onclick = () => {
             let input = $('.edit-input').val().trim()
+            if (!input) return alert('請在裡面打東西!');
+            to全形.forEach(char => {
+                input = input.replaceAll(char.i, char.o)
+            })
             if (homeworkList.find((hw) => hw.text === input)) {
                 return $('.edit-hw').removeClass('show')
             }
@@ -89,6 +124,9 @@ const addHW = (hw) => {
 $('.add-btn').on('click', () => {
     let input = $('.hw-input').val().trim()
     if (!input) return alert('請在裡面打東西!');
+    to全形.forEach(char => {
+        input = input.replaceAll(char.i, char.o)
+    })
     if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
     homeworkList.push({
         text: input,
@@ -106,6 +144,7 @@ homeworkList.forEach((hw) => addHW(hw))
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
+        if ($('.edit-hw').hasClass('show')) return $('.save-btn')[0].click();
         $('.add-btn')[0].click()
     }
 })
