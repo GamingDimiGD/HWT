@@ -134,3 +134,23 @@ button:hover {
     background: #3c0000;
     color: #fff;
 }
+
+.color {
+    border: 7px #003c00 solid;
+    border-radius: 4px;
+    background-color: #003c00;
+    width: 2.5rem;
+    height: 2.5rem;
+}
+
+.option-list {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+
+.close {
+    margin: 5px;
+}

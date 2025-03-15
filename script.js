@@ -9,6 +9,9 @@ const getDay = () => {
     return ['日', '一', '二', '三', '四', '五', '六'][day]
 }
 
+$('.day').html(getDay())
+
+// i have committed a warcrime
 let to全形 = [
     {
         i: '(',
@@ -40,8 +43,6 @@ let to全形 = [
     }
 ]
 
-$('.day').html(getDay())
-
 const toHorizontalWords = () => {
     let e = []
     $.each($('.hw'), (i, hw) => {
@@ -59,23 +60,20 @@ const toHorizontalWords = () => {
     })
     return e
 }
-const addHW = (hw) => {
-    let input = hw.text
-    const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
-    let eleText =
-        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text">${input}</b>
-        <button class="remove" --data-index="${hwI}" >-</button><button class="edit" --data-index="${hwI}" ><i class="fa-solid fa-pen"></i></button><input type="color" class="color" --data-index="${hwI}" value="${hw.color}"></div>`
-    $('.hw-container').append(eleText)
-    console.log($(`.remove[--data-index="${hwI}"]`))
-    $(`.remove[--data-index="${hwI}"]`).on('click', () => {
+
+const initOptionModal = (hwI) => {
+    let hwText = homeworkList[hwI].text
+    $('.remove, .edit, .color, .left, .right').off()
+    $(`.remove`).on('click', () => {
         alertModal('確定刪除作業?', [
             {
                 text: '確定',
                 onclick: () => {
-                    homeworkList = homeworkList.filter((hw) => hw.text !== input)
+                    homeworkList = homeworkList.filter((hw) => hw.text !== hwText)
                     $('.hw-container').empty();
                     $.jStorage.set('hw', homeworkList)
                     homeworkList.forEach((hw) => addHW(hw))
+                    $('.hw-options').removeClass('show')
                 }
             },
             {
@@ -86,9 +84,9 @@ const addHW = (hw) => {
             }
         ])
     })
-    $(`.edit[--data-index="${hwI}"]`).on('click', () => {
+    $(`.edit`).on('click', () => {
         $('.edit-hw').addClass('show')
-        $('.edit-input').val(input)
+        $('.edit-input').val(hwText)
         $('.edit-input').focus()
         $('.save-btn')[0].onclick = () => {
             let input = $('.edit-input').val().trim()
@@ -103,16 +101,53 @@ const addHW = (hw) => {
             $('.hw-container').empty();
             $.jStorage.set('hw', homeworkList)
             homeworkList.forEach((hw) => addHW(hw))
+            hwText = input
             toHorizontalWords()
             $('.edit-hw').removeClass('show')
         }
     })
-    $(`.color[--data-index="${hwI}"]`).on('change', () => {
-        let color = $(`.color[--data-index="${hwI}"]`).val()
+    $('.color').val(homeworkList[hwI].color)
+    $(`.color`).on('change', () => {
+        let color = $(`.color`).val()
         homeworkList[hwI].color = color
         $.jStorage.set('hw', homeworkList)
         console.log(color)
         $(`.hw[--data-index="${hwI}"]`).css('color', color)
+    })
+    $('.left').on('click', () => {
+        if (hwI < homeworkList.length - 1) {
+            let temp = homeworkList[hwI]
+            homeworkList[hwI] = homeworkList[hwI + 1]
+            homeworkList[hwI + 1] = temp
+            $('.hw-container').empty()
+            homeworkList.forEach((hw) => addHW(hw))
+            hwI++
+            toHorizontalWords()
+        }
+    })
+    $('.right').on('click', () => { 
+        if (hwI > 0) {
+            let temp = homeworkList[hwI]
+            homeworkList[hwI] = homeworkList[hwI - 1]
+            homeworkList[hwI - 1] = temp
+            $('.hw-container').empty()
+            homeworkList.forEach((hw) => addHW(hw))
+            hwI--
+            toHorizontalWords()
+        }
+    })
+}
+
+const addHW = (hw) => {
+    let input = hw.text
+    const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
+    let eleText =
+        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text">${input}</b>
+        <button class="hw-options" --data-index="${hwI}"><i class="fa-solid fa-gear" aria-hidden="true"></i></button></div>`
+    $('.hw-container').append(eleText)
+    $(`.hw-options[--data-index="${hwI}"]`).on('click', () => {
+        $('.hw-options').addClass('show')
+        initOptionModal(hwI)
     })
     if (homeworkList[hwI]) {
         $(`.color[--data-index="${hwI}"]`).val(homeworkList[hwI].color)

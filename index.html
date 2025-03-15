@@ -29,6 +29,25 @@
     <div class="hw-container">
     </div>
     <button class="clear">清除全部</button>
+    <div class="modal hw-options">
+        <div class="content">
+            <h2>作業設定</h2>
+            <div class="option-list">
+                <button class="remove"><i class="fa-solid fa-trash" aria-hidden="true"></i></button>
+                <button class="edit"><i class="fa-solid fa-pen" aria-hidden="true"></i></button>
+                <input type="color" class="color" value="#ffffff"><br>
+                <div class="arrows">
+                    <button class="left">
+                        <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+                    </button>
+                    <button class="right">
+                        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+            <button class="close" onclick="$('.hw-options').removeClass('show')">關閉</button>
+        </div>
+    </div>
     <div class="modal edit-hw">
         <div class="content">
             <h2>編輯作業</h2>
