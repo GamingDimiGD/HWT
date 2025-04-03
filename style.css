@@ -154,3 +154,21 @@ button:hover {
 .close {
     margin: 5px;
 }
+
+.out {
+    font-size: 1.2rem;
+    padding: 2px 7px;
+}
+
+.fast-enter input[type="number"] {
+    width: 50px;
+    text-align: left;
+}
+
+.fast-enter .content div, .fast-enter .content button {
+    margin: 2px;
+}
+
+.fast-enter input[type="text"] {
+    width: 100%;
+}

@@ -25,6 +25,7 @@
     <div class="input-container">
         <input type="text" class="hw-input" placeholder="輸入作業">
         <button class="add-btn">+</button>
+        <button class="fast-button" onclick="$('.fast-enter').addClass('show')"><i class="fa-solid fa-star"></i></button>
     </div>
     <div class="hw-container">
     </div>
@@ -57,6 +58,65 @@
                 <button class="cancel-btn" onclick="$('.edit-hw').removeClass('show')">取消</button>
             </div>
         </div>
+    </div>
+    <div class="modal fast-enter">
+        <div class="content">
+            <h2>快速輸入</h2>
+            <div>
+                <select name="type" id="type">
+                    <option value="">選擇作業類別</option>
+                    <option value=" ">作業</option>
+                    <option value="考">考試</option>
+                    <option value="看">閱讀/觀看</option>
+                </select>
+            </div>
+            <div>
+                <select name="subject" id="subject">
+                    <option value="">選擇作業科目</option>
+                    <option value="國">國文</option>
+                    <option value="數">數學</option>
+                    <option value="英">英文</option>
+                    <option value="自">自然</option>
+                    <option value="生">生物</option>
+                    <option value="理">理化</option>
+                    <option value="地科">地科</option>
+                    <option value="社">社會</option>
+                    <option value="歷">歷史</option>
+                    <option value="地">地理</option>
+                    <option value="公">公民</option>
+                    <option value="物">物理</option>
+                    <option value="化">化學</option>
+                </select>
+            </div>
+            <div>
+                <!-- DO NOT ABBREVIATE THIS -->
+                <select name="choose-book-type" id="choose-book-type">
+                    <option value="">選作業本類別</option>
+                    <option value="課">課本</option>
+                    <option value="習">習作</option>
+                    <option value="講">講義</option>
+                    <option value="自">自修</option>
+                    <option value="卷">考卷/練習卷</option>
+                    <option value="小卷">小卷</option>
+                    <option value="大卷">大卷</option>
+                    <option value="白卷">白卷</option>
+                    <option value="學單">學習單</option>
+                </select>
+            </div>
+            <button class="toggle-range-mode" onclick="trm()">
+                切換範圍模式
+            </button>
+            <div class="page-range">
+                <label for="page-from">P.</label><input type="number" min="0" id="page-from">
+                <label for="page-to">~ P.</label><input type="number" min="0" id="page-to">
+            </div>
+            <div class="custom-range">
+                <input type="text" id="custom-range-input" placeholder="輸入範圍">
+            </div>
+            單面的話第二個頁數不用輸入
+            <button class="submit-fe">送出</button>
+        </div>
+        <button class="out" onclick="$('.fast-enter').removeClass('show')">離開</button>
     </div>
 </body>
 

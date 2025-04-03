@@ -47,7 +47,8 @@ const toHorizontalWords = () => {
     let e = []
     $.each($('.hw'), (i, hw) => {
         const hwText = hw.querySelector('.hw-text').innerText
-        const regexp = /([ -z][^<>])\w*/g;
+        // const regexp = /([ -z][^<>])\w*/g;
+        const regexp = /[!-z]+/g;
         let array = []
         const arr = [...hwText.matchAll(regexp)]
         arr.forEach(word => {
@@ -125,7 +126,7 @@ const initOptionModal = (hwI) => {
             toHorizontalWords()
         }
     })
-    $('.right').on('click', () => { 
+    $('.right').on('click', () => {
         if (hwI > 0) {
             let temp = homeworkList[hwI]
             homeworkList[hwI] = homeworkList[hwI - 1]
@@ -156,8 +157,7 @@ const addHW = (hw) => {
     toHorizontalWords()
 }
 
-$('.add-btn').on('click', () => {
-    let input = $('.hw-input').val().trim()
+const addInput = (input) => {
     if (!input) return alert('請在裡面打東西!');
     to全形.forEach(char => {
         input = input.replaceAll(char.i, char.o)
@@ -172,14 +172,19 @@ $('.add-btn').on('click', () => {
     $('.hw-input')[0].value = ''
     $('.hw-container').empty();
     homeworkList.forEach((hw) => addHW(hw))
-})
+}
 
+$('.add-btn').on('click', () => {
+    let input = $('.hw-input').val().trim()
+    addInput(input)
+})
 
 homeworkList.forEach((hw) => addHW(hw))
 
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         if ($('.edit-hw').hasClass('show')) return $('.save-btn')[0].click();
+        if ($('.fast-enter').hasClass('show')) return $('.submit-fe')[0].click();
         $('.add-btn')[0].click()
     }
 })
@@ -202,4 +207,37 @@ $('.clear').on('click', () => {
             }
         }
     ])
+})
+
+let isPageRange = true
+$('.custom-range').hide()
+
+const trm = () => {
+    isPageRange = !isPageRange
+    if (isPageRange) {
+        $('.page-range').show();
+        $('.custom-range').hide();
+    } else {
+        $('.page-range').hide();
+        $('.custom-range').show();
+    }
+    $('.page-range input, #custom-range-input').val('')
+}
+
+$('.submit-fe').on('click', () => {
+    if (!$('select#type').val() || !$('select#subject').val() || !$('select#choose-book-type').val()) return alert('作業未輸入完整!')
+    if ($('select#type').val() === ' ') $('select#type').val('')
+    if (isPageRange) {
+        if (isNaN($('#page-from').val())) return alert('作業未輸入完整!')
+        let text = $('select#type').val() + $('select#subject').val() + $('select#choose-book-type').val() + "P." + $('#page-from').val()
+        if ($('#page-to').val() && $('#page-from').val() !== $('#page-to').val()) text += "~P." + $('#page-to').val()
+        addInput(text)
+    } else {
+        if (!$('#custom-range-input').val()) return alert('作業未輸入完整!')
+        let text = $('select#type').val() + $('select#subject').val() + $('select#choose-book-type').val() + $('#custom-range-input').val()
+        addInput(text)
+    }
+    $('select#type, select#subject, select#choose-book-type, #page-to, #page-from, #custom-range-input').val('')
+    $('.fast-enter').removeClass('show')
+    return;
 })
