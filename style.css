@@ -61,7 +61,7 @@ button:hover {
     font-weight: unset;
 }
 
-.clear {
+.bottom-left-buttons {
     position: fixed;
     bottom: 10px;
     left: 10px;
@@ -171,4 +171,27 @@ button:hover {
 
 .fast-enter input[type="text"] {
     width: 100%;
+}
+
+.option-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.option-display div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.option-display div b {
+    margin-bottom: 3.6px;
+}
+
+input[type="checkbox"] {
+    width: 1.3rem;
+    height: 1.3rem;
 }

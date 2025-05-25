@@ -31,11 +31,17 @@
     <div class="input-container">
         <input type="text" class="hw-input" placeholder="輸入作業">
         <button class="add-btn">+</button>
-        <button class="fast-button" onclick="$('.fast-enter').addClass('show')"><i class="fa-solid fa-star"></i></button>
+        <button class="fast-button" onclick="$('.fast-enter').addClass('show')"><i
+                class="fa-solid fa-star"></i></button>
     </div>
     <div class="hw-container">
     </div>
-    <button class="clear">清除全部</button>
+    <div class="bottom-left-buttons">
+        <button class="settings" onclick="$('.options.modal').addClass('show')">
+            <i class="fa-solid fa-sliders"></i>
+        </button>
+        <button class="clear">清除全部</button>
+    </div>
     <div class="modal hw-options">
         <div class="content">
             <h2>作業設定</h2>
@@ -127,6 +133,36 @@
             <button class="submit-fe">送出</button>
         </div>
         <button class="out" onclick="$('.fast-enter').removeClass('show')">離開</button>
+    </div>
+    <div class="options modal">
+        <div class="content">
+            <h1>選項</h1>
+            <div class="option-display">
+                <div>
+                    <input type="checkbox" name="unsafe-input" id="unsafe-input" data-default="false"
+                        autocomplete="off">
+                    <b>不安全輸入</b>
+                </div>
+                <div>
+                    <input type="checkbox" name="to全形" id="to全形" data-default="true" autocomplete="off">
+                    <b>自動轉全形</b>
+                </div>
+                <div>
+                    <input type="checkbox" id="smaller-space" name="smaller-space" data-default="false"
+                        autocomplete="off">
+                    <b>橫寫的空格</b>
+                </div>
+            </div>
+        </div>
+        <button class="out" onclick="$('.options.modal').removeClass('show')
+$.each($('.option-display div input'), (i, e) => {
+    e = $(e)
+    hwt.options[e.attr('id')] = e.attr('checked')? true : false;
+    updateDayAndSave()
+    $('.hw-container').empty();
+    homeworkList.forEach((hw) => addHW(hw))
+    toVerticalWords()
+})">儲存並離開</button>
     </div>
 </body>
 

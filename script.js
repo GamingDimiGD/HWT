@@ -1,15 +1,44 @@
-$('.y').html(new Date().getFullYear() - 1911)
-$('.m').html(new Date().getMonth() + 1)
-$('.d').html(new Date().getDate())
 
 let homeworkList = $.jStorage.get('hw') || []
 
-const getDay = () => {
-    const day = new Date().getDay()
-    return ['日', '一', '二', '三', '四', '五', '六'][day]
+const emptySave = {
+    options: {}
 }
 
-$('.day').html(getDay())
+$.each($('.option-display div input'), (i, e) => {
+    e = $(e)
+    emptySave.options[e.attr('id')] = e.attr("data-default") === 'true' ? true : false;
+
+})
+
+let hwt = $.jStorage.get("HWT") || emptySave
+
+$.each($('.option-display div input'), (i, e) => {
+    e = $(e)
+    if (hwt.options[e.attr('id')]) e.attr("checked", 'checked')
+    e.on("click", () => {
+        e.attr("checked", e.attr("checked") ? false : true)
+    })
+})
+
+const updateDayAndSave = () => {
+    $('.y').html(new Date().getFullYear() - 1911)
+    $('.m').html(new Date().getMonth() + 1)
+    $('.d').html(new Date().getDate())
+    const getDay = () => {
+        const day = new Date().getDay()
+        return ['日', '一', '二', '三', '四', '五', '六'][day]
+    }
+
+    $('.day').html(getDay())
+
+    $.jStorage.set("HWT", hwt)
+
+}
+
+updateDayAndSave()
+
+setInterval(updateDayAndSave, 10000)
 
 // i have committed a warcrime
 let to全形 = [
@@ -43,19 +72,22 @@ let to全形 = [
     }
 ]
 
-const toHorizontalWords = () => {
+const toVerticalWords = () => {
     let e = []
     $.each($('.hw'), (i, hw) => {
         const hwText = hw.querySelector('.hw-text').innerText
-        // const regexp = /([ -z][^<>])\w*/g;
-        const regexp = /[!-z]+/g;
+        let regexp = /[!-z]+/g;
+        if (hwt.options["smaller-space"]) regexp = /[ -z]+/g;
         let array = []
         const arr = [...hwText.matchAll(regexp)]
         arr.forEach(word => {
             array.push(word[0])
+            console.log(word)
         });
-        array.forEach(w => {
-            hw.querySelector('.hw-text').innerHTML = hw.querySelector('.hw-text').innerHTML.replace(w, `<b class="num unbold">${w}</b>`)
+        array.forEach((w, i) => {
+            if (hwt["unsafe-input"]) hw.querySelector('.hw-text').innerHTML = hw.querySelector('.hw-text').innerHTML.replaceAll(w, `<b class="num unbold">${w}</b>`)
+            hw.querySelector('.hw-text').innerHTML = hw.querySelector('.hw-text').innerHTML.replaceAll(w, `<b class="num unbold" data-id="${i}"></b>`)
+            $(hw).find(`.num.unbold[data-id="${i}"]`).text(w)
         })
         e.push(array)
     })
@@ -92,9 +124,11 @@ const initOptionModal = (hwI) => {
         $('.save-btn')[0].onclick = () => {
             let input = $('.edit-input').val().trim()
             if (!input) return alert('請在裡面打東西!');
-            to全形.forEach(char => {
-                input = input.replaceAll(char.i, char.o)
-            })
+            if (hwt.options['to全形']) {
+                to全形.forEach(char => {
+                    input = input.replaceAll(char.i, char.o)
+                })
+            }
             if (homeworkList.find((hw) => hw.text === input)) {
                 return $('.edit-hw').removeClass('show')
             }
@@ -103,7 +137,7 @@ const initOptionModal = (hwI) => {
             $.jStorage.set('hw', homeworkList)
             homeworkList.forEach((hw) => addHW(hw))
             hwText = input
-            toHorizontalWords()
+            toVerticalWords()
             $('.edit-hw').removeClass('show')
         }
     })
@@ -123,7 +157,7 @@ const initOptionModal = (hwI) => {
             $('.hw-container').empty()
             homeworkList.forEach((hw) => addHW(hw))
             hwI++
-            toHorizontalWords()
+            toVerticalWords()
         }
     })
     $('.right').on('click', () => {
@@ -134,7 +168,7 @@ const initOptionModal = (hwI) => {
             $('.hw-container').empty()
             homeworkList.forEach((hw) => addHW(hw))
             hwI--
-            toHorizontalWords()
+            toVerticalWords()
         }
     })
 }
@@ -143,9 +177,11 @@ const addHW = (hw) => {
     let input = hw.text
     const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
     let eleText =
-        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text">${input}</b>
+        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text"></b>
         <button class="hw-options" --data-index="${hwI}"><i class="fa-solid fa-gear" aria-hidden="true"></i></button></div>`
     $('.hw-container').append(eleText)
+    if (hwt.options['unsafe-input']) $(`.hw[--data-index="${hwI}"] .hw-text`).html(input)
+    else $(`.hw[--data-index="${hwI}"] .hw-text`).text(input)
     $(`.hw-options[--data-index="${hwI}"]`).on('click', () => {
         $('.hw-options').addClass('show')
         initOptionModal(hwI)
@@ -154,14 +190,16 @@ const addHW = (hw) => {
         $(`.color[--data-index="${hwI}"]`).val(homeworkList[hwI].color)
         $(`.hw[--data-index="${hwI}"]`).css('color', homeworkList[hwI].color)
     }
-    toHorizontalWords()
+    toVerticalWords()
 }
 
 const addInput = (input) => {
     if (!input) return alert('請在裡面打東西!');
-    to全形.forEach(char => {
-        input = input.replaceAll(char.i, char.o)
-    })
+    if (hwt.options['to全形']) {
+        to全形.forEach(char => {
+            input = input.replaceAll(char.i, char.o)
+        })
+    }
     if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
     homeworkList.push({
         text: input,
@@ -197,7 +235,7 @@ $('.clear').on('click', () => {
                 $.jStorage.deleteKey('hw');
                 $('.hw-container').empty();
                 homeworkList = [];
-                toHorizontalWords();
+                toVerticalWords();
             }
         },
         {
