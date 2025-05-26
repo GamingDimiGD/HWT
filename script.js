@@ -72,26 +72,58 @@ let to全形 = [
     }
 ]
 
+function splitWithMatches(str, regex) {
+    let result = [];
+    let lastIndex = 0;
+    let match;
+
+    const globalRegex = new RegExp(regex.source, regex.flags.includes('g') ? regex.flags : regex.flags + 'g');
+
+    while ((match = globalRegex.exec(str)) !== null) {
+        if (match.index > lastIndex) {
+            result.push(str.slice(lastIndex, match.index));
+        }
+        result.push(match[0]);
+        lastIndex = globalRegex.lastIndex;
+    }
+
+    if (lastIndex < str.length) {
+        result.push(str.slice(lastIndex));
+    }
+
+    let matchOnly = [...str.matchAll(globalRegex)].map(a => a = a[0]);
+
+
+    return {
+        result,
+        matchOnly,
+        isFirstOneAMatch: matchOnly[0] === result[0],
+    };
+}
+
 const toVerticalWords = () => {
-    let e = []
     $.each($('.hw'), (i, hw) => {
         const hwText = hw.querySelector('.hw-text').innerText
+        const hwDisplay = hw.querySelector('.hw-text')
         let regexp = /[!-z]+/g;
         if (hwt.options["smaller-space"]) regexp = /[ -z]+/g;
-        let array = []
-        const arr = [...hwText.matchAll(regexp)]
-        arr.forEach(word => {
-            array.push(word[0])
-            console.log(word)
-        });
-        array.forEach((w, i) => {
-            if (hwt["unsafe-input"]) hw.querySelector('.hw-text').innerHTML = hw.querySelector('.hw-text').innerHTML.replaceAll(w, `<b class="num unbold">${w}</b>`)
-            hw.querySelector('.hw-text').innerHTML = hw.querySelector('.hw-text').innerHTML.replaceAll(w, `<b class="num unbold" data-id="${i}"></b>`)
-            $(hw).find(`.num.unbold[data-id="${i}"]`).text(w)
+        let func = splitWithMatches(hwText, regexp),
+            { result, isFirstOneAMatch } = func;
+        hwDisplay.innerHTML = ''
+        result.forEach((a, i) => {
+            if ((!(i % 2) && isFirstOneAMatch) || (i % 2 && !isFirstOneAMatch)) {
+                if (hwt.options["unsafe-input"]) return hwDisplay.innerHTML += `<b class="num unbold">${a}</b>`;
+                let b = document.createElement('b');
+                b.innerText = a;
+                b.classList.add("num");
+                b.classList.add('unbold');
+                hwDisplay.append(b);
+            } else {
+                if (hwt.options["unsafe-input"]) return hwDisplay.innerHTML += a;
+                hwDisplay.append(a)
+            }
         })
-        e.push(array)
     })
-    return e
 }
 
 const initOptionModal = (hwI) => {
