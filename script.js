@@ -103,17 +103,48 @@ function splitWithMatches(str, regex) {
 
 const toVerticalWords = () => {
     $.each($('.hw'), (i, hw) => {
-        const hwText = hw.querySelector('.hw-text').innerText
+        const hwText = homeworkList[i].text;
         const hwDisplay = hw.querySelector('.hw-text')
         let regexp = /[!-z]+/g;
         if (hwt.options["smaller-space"]) regexp = /[ -z]+/g;
         let func = splitWithMatches(hwText, regexp),
             { result, isFirstOneAMatch } = func;
         hwDisplay.innerHTML = ''
+        // this feature complicated af
+        // it's all just regex patterns
+        if (hwt.options['escape-char']) {
+            result.forEach((a, i) => {
+                if (a.match(/\\h(?!\\)[\s\S]*/g)) {
+                    let arrayUntilEnd = result.slice(i + 1)
+                    let end = arrayUntilEnd.find(v => v.match(/[\s\S]*\\h\\[\s\S]*/g))
+                    if (!end) return;
+                    arrayUntilEnd = arrayUntilEnd.slice(0, arrayUntilEnd.indexOf(end))
+                    result[i] = a + arrayUntilEnd.join("") + end
+                    const temp = (index) => {
+                        let e = !result[i + index].match(/[\s\S]*\\h\\/g)
+                        if (!e) delete result[i + index]
+                        return e
+                    }
+                    for (let index = 1; temp(index); index++) {
+                        delete result[i + index]
+                    }
+                }
+            })
+        }
+        result = result.filter(a => a !== undefined)
+        if (hwt.options['escape-char']) result = result.map(a => a.replaceAll('\\n', '\n'))
         result.forEach((a, i) => {
-            if ((!(i % 2) && isFirstOneAMatch) || (i % 2 && !isFirstOneAMatch)) {
+            if (
+                (!(i % 2) && isFirstOneAMatch) || (i % 2 && !isFirstOneAMatch) ||
+                (a.match(/\\h[\s\S]+\\h\\/g) && hwt.options['escape-char'])
+            ) {
                 if (hwt.options["unsafe-input"]) return hwDisplay.innerHTML += `<b class="num unbold">${a}</b>`;
                 let b = document.createElement('b');
+                if (hwt.options['escape-char'] && a.match(/\\h[\s\S]+\\h\\/g)) {
+                    a = a.replaceAll('\\h\\', '\n')
+                    if (a.match(/[\s\S]+\\h/g)) a = a.replaceAll('\\h', '\n')
+                    else a = a.replaceAll('\\h', '')
+                }
                 b.innerText = a;
                 b.classList.add("num");
                 b.classList.add('unbold');
@@ -189,6 +220,7 @@ const initOptionModal = (hwI) => {
             $('.hw-container').empty()
             homeworkList.forEach((hw) => addHW(hw))
             hwI++
+            $.jStorage.set('hw', homeworkList)
             toVerticalWords()
         }
     })
@@ -200,6 +232,7 @@ const initOptionModal = (hwI) => {
             $('.hw-container').empty()
             homeworkList.forEach((hw) => addHW(hw))
             hwI--
+            $.jStorage.set('hw', homeworkList)
             toVerticalWords()
         }
     })
@@ -209,8 +242,7 @@ const addHW = (hw) => {
     let input = hw.text
     const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
     let eleText =
-        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text"></b>
-        <button class="hw-options" --data-index="${hwI}"><i class="fa-solid fa-gear" aria-hidden="true"></i></button></div>`
+        `<div class="hw" --data-index="${hwI}" ><b class="num">${hwI + 1}.</b><b class="hw-text"></b><button class="hw-options" --data-index="${hwI}"><i class="fa-solid fa-gear" aria-hidden="true"></i></button></div>`
     $('.hw-container').append(eleText)
     if (hwt.options['unsafe-input']) $(`.hw[--data-index="${hwI}"] .hw-text`).html(input)
     else $(`.hw[--data-index="${hwI}"] .hw-text`).text(input)

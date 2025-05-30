@@ -61,6 +61,14 @@ button:hover {
     font-weight: unset;
 }
 
+.num.unbold {
+    text-align: center;
+}
+
+br {
+    line-height: 0;
+}
+
 .bottom-left-buttons {
     position: fixed;
     bottom: 10px;
@@ -110,6 +118,7 @@ button:hover {
     opacity: 1;
     pointer-events: auto;
 }
+
 .modal.show .content {
     pointer-events: auto;
 }
@@ -165,7 +174,8 @@ button:hover {
     text-align: left;
 }
 
-.fast-enter .content div, .fast-enter .content button {
+.fast-enter .content div,
+.fast-enter .content button {
     margin: 2px;
 }
 
@@ -194,4 +204,12 @@ button:hover {
 input[type="checkbox"] {
     width: 1.3rem;
     height: 1.3rem;
+}
+
+.options.modal h1 {
+    font-size: 2rem;
+}
+
+.options.modal .content {
+    max-width: 50%;
 }
