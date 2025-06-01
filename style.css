@@ -33,6 +33,10 @@ h1 {
     padding: 5px;
 }
 
+.hw-text {
+    overflow-wrap: break-word;
+}
+
 input {
     color: #000;
     font-size: 1.5rem;
@@ -210,6 +214,64 @@ input[type="checkbox"] {
     font-size: 2rem;
 }
 
-.options.modal .content {
+.more-info-button, .more-info-button:hover {
+    background: none;
+    border-radius: 0;
+    margin: 0;
+    padding: 0 0 4px 0 !important;
+    color: #2b2b2b;
+}
+
+.more-info-button:hover {
+    color: #000 !important;
+}
+
+.option-display .more-info-button {
+    margin-left: -5px;
+    transform: scale(0.7);
+}
+
+.escape-char-cheatsheet .content, .edit-fast-enter .content {
     max-width: 50%;
+}
+details summary {
+    font-size: 2rem;
+}
+
+details {
+    font-size: 1rem !important;
+}
+
+.not-upright-text {
+    text-orientation: initial;
+}
+
+.tweak-for-display {
+    font-size: inherit;
+    writing-mode: horizontal-tb !important;
+}
+
+.highlighted {
+    background-color: #ff0;
+    color: #000;
+    writing-mode: vertical-rl;
+}
+
+.ununbold {
+    font-weight: bolder !important;
+    writing-mode: vertical-rl;
+}
+
+.edit-fast-enter .content {
+    align-items: center;
+}
+
+.efe-container {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.efe-container input {
+    width: 10rem;
 }

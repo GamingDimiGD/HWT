@@ -1,4 +1,4 @@
-const alertModal = (text, options) => {
+export const alertModal = (text, options) => {
     const modal = document.createElement("div");
     modal.classList.add("modal");
     modal.classList.add('alert-modal')
@@ -53,3 +53,4 @@ const alertModal = (text, options) => {
     document.body.appendChild(modal);
     setTimeout(() => modal.classList.add("show"), 1)
 }
+
