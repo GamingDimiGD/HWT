@@ -127,6 +127,7 @@ const initOptionModal = (hwI) => {
         $('.save-btn')[0].onclick = () => {
             let input = $('.edit-input').val().trim()
             if (!input) return alert('請在裡面打東西!');
+            if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
             if (hwt.options['to全形']) {
                 to全形.forEach(char => {
                     input = input.replaceAll(char.i, char.o)
