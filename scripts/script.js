@@ -1,17 +1,18 @@
 import { alertModal } from "./modal.js";
-import { toVerticalWords } from "./regexAndEscapeChar.js"
+import { toVerticalWords } from "./options/regexAndEscapeChar.js"
 import { updateCustomFE } from './editFE.js'
+import { updateTextSize } from "./options/textSize.js";
 export let homeworkList = $.jStorage.get('hw') || []
 
 const emptySave = {
     options: {},
     customActions: [], customSubjects: [], customBookTypes: [],
+    textSize: 1,
 }
 
 $.each($('.option-display div input'), (i, e) => {
     e = $(e)
     emptySave.options[e.attr('id')] = e.attr("data-default") === 'true' ? true : false;
-
 })
 
 export let hwt = $.jStorage.get("HWT") || emptySave
@@ -33,6 +34,7 @@ $.each($('.option-display div input'), (i, e) => {
 })
 
 updateCustomFE()
+updateTextSize()
 
 export const updateDayAndSave = () => {
     $('.y').html(new Date().getFullYear() - 1911)

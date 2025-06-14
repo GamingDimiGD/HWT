@@ -1,4 +1,4 @@
-import { homeworkList, hwt } from "./script.js";
+import { homeworkList, hwt } from "../script.js";
 
 String.prototype.replaceLast = function (search, replacement) {
     const str = this.toString();

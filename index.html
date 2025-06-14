@@ -26,7 +26,7 @@
 </head>
 
 <body>
-    <h1>民國<b class="num y">X</b>年<b class="num m">X</b>月<b class="num d">X</b>日 星期<b class="num day">X</b></h1>
+    <h1 class="today">民國<b class="num y">X</b>年<b class="num m">X</b>月<b class="num d">X</b>日 星期<b class="num day">X</b></h1>
     <div class="input-container">
         <input type="text" class="hw-input" placeholder="輸入作業">
         <button class="add-btn">+</button>
@@ -153,6 +153,12 @@
                 <button onclick="$('.edit-fast-enter').addClass('show')">
                     自訂快速輸入
                 </button>
+                <b class="text-size-display">文字大小:</b>
+                <input type="range" class="change-text-size" min="0.01" max="5" step="0.01">
+                <div class="step-buttons-ts">
+                    <button class="decrease"><i class="fa-solid fa-minus"></i></button>
+                    <button class="increase"><i class="fa-solid fa-plus"></i></button>
+                </div>
             </div>
         </div>
         <button class="out">儲存並離開</button>
