@@ -127,9 +127,9 @@ export const splitWithMatches = (str, regex) => {
 }
 
 
-export const toVerticalWords = () => {
+export const toVerticalWords = (homeworkData = homeworkList) => {
     $.each($('.hw'), (i, hw) => {
-        const hwText = homeworkList[i].text;
+        const hwText = homeworkData[i].text;
         const hwDisplay = hw.querySelector('.hw-text')
         let regexp = /[!-z]+/gu;
         if (hwt.options["smaller-space"]) regexp = /[ -z]+/gu;

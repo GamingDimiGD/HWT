@@ -8,6 +8,7 @@ const emptySave = {
     options: {},
     customActions: [], customSubjects: [], customBookTypes: [],
     textSize: 1,
+    history: [],
 }
 
 $.each($('.option-display div input'), (i, e) => {
@@ -24,6 +25,13 @@ if (Object.keys(hwt).length < Object.keys(emptySave).length) {
         }
     })
 }
+if (Object.keys(hwt).length > Object.keys(emptySave).length) {
+    Object.keys(hwt).forEach(key => {
+        if (!emptySave.hasOwnProperty(key)) {
+            delete hwt[key]
+        }
+    })
+}
 
 $.each($('.option-display div input'), (i, e) => {
     e = $(e)
@@ -32,6 +40,16 @@ $.each($('.option-display div input'), (i, e) => {
         e.attr("checked", e.attr("checked") ? false : true)
     })
 })
+
+$.each($('.out'), (_, b) => {
+    $(b).on("click", () => {
+        $(b.parentNode).removeClass("show")
+    })
+})
+
+if (hwt.options['show-welcome']) {
+    $('.welcome.modal').addClass('show')
+}
 
 updateCustomFE()
 updateTextSize()
@@ -44,14 +62,20 @@ export const updateDayAndSave = () => {
         const day = new Date().getDay()
         return ['日', '一', '二', '三', '四', '五', '六'][day]
     }
-
+    
     $('.day').html(getDay())
-
+    
     $.jStorage.set("HWT", hwt)
-
+    
 }
 
 updateDayAndSave()
+$('.stop-showing').on("click", () => {
+    $('.welcome.modal').removeClass('show')
+    $('#show-welcome').attr('checked', false)
+    hwt.options['show-welcome'] = false
+    updateDayAndSave()
+})
 
 setInterval(updateDayAndSave, 10000)
 
@@ -107,7 +131,14 @@ const initOptionModal = (hwI) => {
             {
                 text: '確定',
                 onclick: () => {
-                    homeworkList = homeworkList.filter((hw) => hw.text !== hwText)
+                    let currentHW = homeworkList[hwI]
+                    hwt.history.push({
+                        text: currentHW.text,
+                        color: currentHW.color,
+                        timestamp: Date.now(),
+                        action: 'DELETE'
+                    })
+                    homeworkList = homeworkList.filter((hw) => hw.text !== currentHW.text)
                     $('.hw-container').empty();
                     $.jStorage.set('hw', homeworkList)
                     homeworkList.forEach((hw) => addHW(hw))
@@ -129,16 +160,20 @@ const initOptionModal = (hwI) => {
         $('.save-btn')[0].onclick = () => {
             let input = $('.edit-input').val().trim()
             if (!input) return alert('請在裡面打東西!');
-            if (homeworkList.find((hw) => hw.text === input)) return alert('不可以重複!');
+            if (homeworkList.find((hw) => hw.text === input)) return alertModal('不可以重複!');
             if (hwt.options['to全形']) {
                 to全形.forEach(char => {
                     input = input.replaceAll(char.i, char.o)
                 })
             }
-            if (homeworkList.find((hw) => hw.text === input)) {
-                return $('.edit-hw').removeClass('show')
-            }
-            homeworkList[hwI].text = input
+            let currentHW = homeworkList[hwI]
+            currentHW.text = input
+            hwt.history.push({
+                text: input,
+                color: currentHW.color,
+                timestamp: Date.now(),
+                action: 'UPDATE'
+            })
             $('.hw-container').empty();
             $.jStorage.set('hw', homeworkList)
             homeworkList.forEach((hw) => addHW(hw))
@@ -150,7 +185,14 @@ const initOptionModal = (hwI) => {
     $('.color').val(homeworkList[hwI].color)
     $(`.color`).on('change', () => {
         let color = $(`.color`).val()
-        homeworkList[hwI].color = color
+        let currentHW = homeworkList[hwI]
+        currentHW.color = color
+        hwt.history.push({
+            text: currentHW.text,
+            color,
+            timestamp: Date.now(),
+            action: 'UPDATE'
+        })
         $.jStorage.set('hw', homeworkList)
         $(`.hw[--data-index="${hwI}"]`).css('color', color)
     })
@@ -180,7 +222,7 @@ const initOptionModal = (hwI) => {
     })
 }
 
-const addHW = (hw) => {
+export const addHW = (hw) => {
     let input = hw.text
     const hwI = homeworkList.indexOf(homeworkList.find((hw) => hw.text === input))
     let eleText =
@@ -211,6 +253,12 @@ const addInput = (input) => {
         text: input,
         color: '#ffffff',
     })
+    hwt.history.push({
+        text: input,
+        color: '#ffffff',
+        timestamp: Date.now(),
+        action: 'WRITE'
+    })
     $.jStorage.set('hw', homeworkList)
     addHW(input)
     $('.hw-input')[0].value = ''
@@ -238,6 +286,14 @@ $('.clear').on('click', () => {
         {
             text: '確定',
             onclick: () => {
+                homeworkList.forEach((hw) => {
+                    hwt.history.push({
+                        text: hw.text,
+                        color: hw.color,
+                        timestamp: Date.now(),
+                        action: 'DELETE'
+                    })
+                })
                 $.jStorage.deleteKey('hw');
                 $('.hw-container').empty();
                 homeworkList = [];
@@ -252,6 +308,8 @@ $('.clear').on('click', () => {
         }
     ])
 })
+
+$('.history-button').on('click', updateHistory)
 
 let isPageRange = true
 $('.custom-range').hide()
@@ -285,3 +343,18 @@ $('.submit-fe').on('click', () => {
     $('.fast-enter').removeClass('show')
     return;
 })
+
+if (window.location.toString() === "https://gamingdimigd.github.io/HWT-BETA/" || window.location.toString() === "http://127.0.0.1:5500/") alertModal('歡迎來到抄聯絡簿神器測試版! 可能會有一些Bug要修復。', [
+    "OK", {
+        text: '我要回去',
+        onclick: () => {
+            window.location.href = "https://gamingdimigd.github.io/HWT/"
+        }
+    }
+])
+
+import { app, analytics, auth, db } from "./firebase/initializer.js"
+import { } from "./firebase/upload.js"
+import { updateHistory } from "./options/history.js";
+
+if (app, analytics, auth, db) console.log('DB loaded!')

@@ -13,20 +13,45 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://kit.fontawesome.com/fbd704794c.js" crossorigin="anonymous"></script>
     <meta name="google-site-verification" content="lmqOyZl2ZCg2ATRUYIP1qIZ1adBDBNPqyu3do0aHNjo" />
+    <script src="https://www.google.com/recaptcha/enterprise.js" async defer></script>
+    <script
+        src="https://www.google.com/recaptcha/enterprise.js?render=6LfkRJkrAAAAAN7wDDtXfMgJ8LT6cymMFUNdT_oN"></script>
 
-    <meta name="description" content="抄聯絡簿神器是一個很好用的一個工具，可以取代使用黑板而用打字的方式來寫出今天有的作業。">
-    <meta name="keywords" content="聯絡簿, 抄聯絡簿, 神器, 抄聯絡簿神器, 作業, 抄">
-    <meta name="author" content="遊戲迪米">
 
     <link rel="stylesheet" href="style.css">
     <script src="scripts/script.js" defer type="module"></script>
 
     <link rel="icon" href="img/HWT.png" type="image/png">
     <title>HWT 抄聯絡簿神器</title>
+    <meta name="description" content="抄聯絡簿神器是一個很好用的一個工具，可以取代使用黑板而用打字的方式來寫出今天有的作業。">
+    <meta name="keywords" content="聯絡簿, 抄聯絡簿, 神器, 抄聯絡簿神器, 作業, 抄">
+    <meta name="author" content="遊戲迪米">
 </head>
 
 <body>
-    <h1 class="today">民國<b class="num y">X</b>年<b class="num m">X</b>月<b class="num d">X</b>日 星期<b class="num day">X</b></h1>
+    <div class="loading-screen">
+        <h1>
+            <img src="./img/HWT.png" alt="HWT">
+            抄聯絡簿神器
+        </h1>
+    </div>
+    <div class="loading-modal modal">
+        <div class="content">
+            <img src="./img/HWT.png" alt="載入中" width="100">
+        </div>
+    </div>
+    <div class="welcome modal">
+        <div class="content">
+            <h1>歡迎!</h1>
+            <p>抄聯絡簿神器是一個很好用的一個工具，可以取代使用黑板而用打字的方式來寫出今天有的作業。</p>
+            <p>欲增加作業項目，請到右方的「輸入作業」打字，並按下「+」(或按下Enter鍵)。</p>
+            <p>欲察看其他好玩的東西，像是雲端聯絡簿，請看左下角按鈕</p>
+            <button class="stop-showing">關閉並不要再顯示</button>
+        </div>
+        <button class="out">離開</button>
+    </div>
+    <h1 class="today">民國<b class="num y">X</b>年<b class="num m">X</b>月<b class="num d">X</b>日 星期<b class="num day">X</b>
+    </h1>
     <div class="input-container">
         <input type="text" class="hw-input" placeholder="輸入作業">
         <button class="add-btn">+</button>
@@ -36,6 +61,20 @@
     <div class="hw-container">
     </div>
     <div class="bottom-left-buttons">
+        <button class="exit-preview" hidden>
+            退出預覽
+        </button>
+        <button class="cloud-hw-lists" onclick="$('.cloud-hw-list').addClass('show')">
+            <b class="unbold">
+                雲端聯絡簿
+            </b>
+        </button>
+        <button class="logout" hidden>
+            登出
+        </button>
+        <button class="login" onclick="$('.account.modal').addClass('show')">
+            登入
+        </button>
         <button class="settings" onclick="$('.options.modal').addClass('show')">
             <i class="fa-solid fa-sliders"></i>
         </button>
@@ -57,8 +96,8 @@
                     </button>
                 </div>
             </div>
-            <button class="close" onclick="$('.hw-options').removeClass('show')">關閉</button>
         </div>
+        <button class="out">關閉</button>
     </div>
     <div class="modal edit-hw">
         <div class="content">
@@ -66,7 +105,7 @@
             <input type="text" class="edit-input">
             <div class="input-options">
                 <button class="save-btn">儲存</button>
-                <button class="cancel-btn" onclick="$('.edit-hw').removeClass('show')">取消</button>
+                <button class="cancel-btn">取消</button>
             </div>
         </div>
     </div>
@@ -124,7 +163,7 @@
             單面的話第二個頁數不用輸入
             <button class="submit-fe">送出</button>
         </div>
-        <button class="out" onclick="$('.fast-enter').removeClass('show')">離開</button>
+        <button class="out">離開</button>
     </div>
     <div class="options modal">
         <div class="content">
@@ -150,8 +189,15 @@
                         <i class="fa-solid fa-circle-question"></i>
                     </button>
                 </div>
+                <div>
+                    <input type="checkbox" id="show-welcome" name="show-welcome" data-default="true" autocomplete="off">
+                    <b>歡迎小視窗</b>
+                </div>
                 <button onclick="$('.edit-fast-enter').addClass('show')">
                     自訂快速輸入
+                </button>
+                <button class="history-button" onclick="$('.history').addClass('show')">
+                    作業動作紀錄
                 </button>
                 <b class="text-size-display">文字大小:</b>
                 <input type="range" class="change-text-size" min="0.01" max="5" step="0.01">
@@ -170,7 +216,7 @@
             <div class="cheatsheet-display">
             </div>
         </div>
-        <button class="out" onclick="$('.escape-char-cheatsheet.modal').removeClass('show')">離開</button>
+        <button class="out">離開</button>
     </div>
     <div class="edit-fast-enter modal">
         <div class="content">
@@ -192,8 +238,81 @@
             </div>
 
         </div>
-        <button class="out" onclick="$('.edit-fast-enter').removeClass('show')">離開</button>
+        <button class="out">離開</button>
     </div>
+    <div class="account modal">
+        <div class="content">
+            <div id="auth-ui">
+                <h2>登入</h2>
+                <input type="email" id="email-input" placeholder="電子郵件">
+                <input type="password" id="password-input" placeholder="密碼">
+                <button id="confirm-login">登入</button>
+                <button id="create-account">建立新帳號</button>
+                <p id="userStatus"></p>
+            </div>
+        </div>
+        <button class="out">離開</button>
+    </div>
+    <div class="cloud-hw-list modal">
+        <div class="content">
+            <h1>雲端聯絡簿</h1>
+            <button class="account-info" onclick="$('.account-info.modal').addClass('show')">帳號資訊</button>
+            <button class="get-id-list">你的代碼</button>
+            <button class="open-upload-modal" onclick="$('.upload-hw-list.modal').addClass('show')">上傳聯絡簿</button>
+            <button class="find-hw-with-id">輸入代碼</button>
+            <button onclick="$('.ai-hw.modal').addClass('show')">AI出作業</button>
+        </div>
+        <button class="out">離開</button>
+    </div>
+    <div class="upload-hw-list modal">
+        <div class="content">
+            <h1>上傳聯絡簿</h1>
+            <p class="warning">⚠️你的聯絡簿的內容<b class="red warning">任何擁有代碼的人</b>都看得到它，請勿放任何私人資訊。</p>
+            <button class="upload-hw">上傳聯絡簿</button>
+        </div>
+        <button class="out">離開</button>
+    </div>
+
+    <div class="account-info modal">
+        <div class="content">
+            <h1>帳號</h1>
+            <b id="uid-display"></b>
+            <button class="reset-password">重設密碼</button>
+        </div>
+        <button class="out">離開</button>
+    </div>
+
+    <div class="user-ids modal">
+        <div class="content">
+            <h1>你的代碼</h1>
+            <div class="user-id-list">
+
+            </div>
+        </div>
+        <button class="out">離開</button>
+    </div>
+    <div class="ai-hw modal">
+        <div class="content">
+            <h1>AI出作業</h1>
+            <p class="warning">使用的AI是Google AI，有時候會有點出問題</p>
+            <textarea name="AI出作業" id="ai-prompt" placeholder="超過150字的部分會被切掉 (選填)"></textarea>
+            <button class="send-ai-prompt">傳送(含紀錄與目前聯絡簿)</button>
+            <button class="send-ai-prompt-without-history">傳送(只含目前聯絡簿)</button>
+        </div>
+        <button class="out">離開</button>
+    </div>
+    <div class="history modal">
+        <div class="content">
+            <h1>前150個動作紀錄</h1>
+            <p class="warning">你的紀錄不會被上傳到網路上或被賣出去 (給AI出作業的話我就不確定了)</p>
+            <p class="warning">順序: 越上面越新</p>
+            <div class="history-list">
+                無紀錄
+            </div>
+        </div>
+        <button class="out">離開</button>
+    </div>
+
 </body>
 
 </html>
