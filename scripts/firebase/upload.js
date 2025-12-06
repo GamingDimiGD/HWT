@@ -34,13 +34,21 @@ $('.get-id-list').on("click", () => {
         const list = Object.keys(snapshot.val())
         console.log(list)
         list.forEach(async key => {
-            let idDisplay = $('<div><pre></pre><button id="configure-hw"><i class="fa-solid fa-wrench"></i></button><button id="copy-hw"><i class="fa-regular fa-copy"></i></button></div>')
+            let idDisplay = $('<div><pre></pre><button id="configure-hw"><i class="fa-solid fa-wrench"></i></button><button id="copy-hw"><i class="fa-regular fa-copy"></i></button><button id="copy-hw-link"><i class="fa-solid fa-link"></i></button></div>')
             $('.user-id-list').append(idDisplay)
             idDisplay.find('pre').text(key)
             idDisplay.find('#configure-hw').on("click", () => findHWwithID(key))
             idDisplay.find("#copy-hw").on("click", async () => {
                 let loading = loadingModal()
                 await navigator.clipboard.writeText(key)
+                    .then(() => alertModal('複製成功!'))
+                    .catch(error => alertModal('複製失敗: ' + error.message))
+                loading.hide()
+            })
+            idDisplay.find("#copy-hw-link").on("click", async () => {
+                let loading = loadingModal()
+                const hwLink = `${window.location.origin}${window.location.pathname}#id=${key}`
+                await navigator.clipboard.writeText(hwLink)
                     .then(() => alertModal('複製成功!'))
                     .catch(error => alertModal('複製失敗: ' + error.message))
                 loading.hide()
@@ -229,4 +237,14 @@ const findHWwithID = (homeworkId) => {
         console.error(error)
         loading.hide()
     })
+}
+
+const urlId = new URLSearchParams(window.location.hash.substring(1)).get('id');
+if (urlId) {
+    alertModal('即將載入代碼: <pre>' + urlId + '</pre>確定載入?', [
+        {
+            text: '確定',
+            onclick: () => findHWwithID(urlId.toUpperCase())
+        }, '取消'
+    ])
 }
